@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Giám Sát Cây Trồng</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-leaf me-2"></i>Hệ Thống Giám Sát Cây Trồng
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">Đọc Hiện Tại</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="sensor-card text-center p-3 rounded">
+                                    <div class="circular-progress" id="temp-progress">
+                                        <div class="inner">
+                                            <i class="fas fa-temperature-high fs-1 text-danger mb-2"></i>
+                                            <h5>Nhiệt Độ</h5>
+                                            <h3 id="temperature-value">--</h3>
+                                            <p class="text-muted">°C</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6 mb-3">
+                                <div class="sensor-card text-center p-3 rounded">
+                                    <div class="circular-progress" id="humidity-progress">
+                                        <div class="inner">
+                                            <i class="fas fa-tint fs-1 text-primary mb-2"></i>
+                                            <h5>Độ Ẩm KK</h5>
+                                            <h3 id="humidity-value">--</h3>
+                                            <p class="text-muted">%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6 mb-3">
+                                <div class="sensor-card text-center p-3 rounded">
+                                    <div class="circular-progress" id="soil-progress">
+                                        <div class="inner">
+                                            <i class="fas fa-seedling fs-1 text-success mb-2"></i>
+                                            <h5>Độ Ẩm Đất</h5>
+                                            <h3 id="soil-moisture-value">--</h3>
+                                            <p class="text-muted">%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <div class="sensor-card text-center p-3 rounded">
+                                    <div class="circular-progress" id="light-progress">
+                                        <div class="inner">
+                                            <i class="fas fa-sun fs-1 text-warning mb-2"></i>
+                                            <h5>Ánh Sáng</h5>
+                                            <h3 id="light-level-value">--</h3>
+                                            <p class="text-muted">%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">Điều Khiển Hệ Thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h5>Chế Độ Hoạt Động</h5>
+                            <div class="form-check form-switch mb-2 d-flex flex-row gap-2 align-content-center">
+                                <input class="form-check-input my-0" type="checkbox" id="auto-mode-toggle" checked>
+                                <label class="form-check-label" for="auto-mode-toggle">
+                                    <span id="mode-label">Chế độ tự động</span>
+                                </label>
+                            </div>
+                            <p class="text-muted small">Chuyển đổi giữa điều khiển tự động (dựa trên ngưỡng) và điều khiển thủ công.</p>
+                        </div>
+                        
+                        <div id="manual-controls" class="d-none">
+                            <h5>Điều Khiển Thủ Công</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="d-grid gap-2">
+                                        <button id="pump-on-btn" class="btn btn-success mb-2">
+                                            <i class="fas fa-tint me-2"></i>Bơm BẬT
+                                        </button>
+                                        <button id="pump-off-btn" class="btn btn-outline-danger">
+                                            <i class="fas fa-tint-slash me-2"></i>Bơm TẮT
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-grid gap-2">
+                                        <button id="light-on-btn" class="btn btn-warning mb-2">
+                                            <i class="fas fa-lightbulb me-2"></i>Đèn BẬT
+                                        </button>
+                                        <button id="light-off-btn" class="btn btn-outline-dark">
+                                            <i class="far fa-lightbulb me-2"></i>Đèn TẮT
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <p class="mb-0"><strong>Trạng Thái Hiện Tại:</strong></p>
+                                <p>Bơm: <span id="pump-status" class="badge bg-secondary">Không Rõ</span></p>
+                                <p>Đèn: <span id="light-status" class="badge bg-secondary">Không Rõ</span></p>
+                            </div>
+                        </div>
+                        
+                        <div id="auto-thresholds">
+                            <h5>Cài Đặt Ngưỡng</h5>
+                            <form id="threshold-form">
+                                <div class="mb-3">
+                                    <label for="temp-min" class="form-label">Nhiệt độ tối thiểu (°C)</label>
+                                    <input type="number" class="form-control" id="temp-min" min="0" max="40" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="temp-max" class="form-label">Nhiệt độ tối đa (°C)</label>
+                                    <input type="number" class="form-control" id="temp-max" min="0" max="50" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="soil-min" class="form-label">Độ ẩm đất tối thiểu (%)</label>
+                                    <input type="number" class="form-control" id="soil-min" min="0" max="100" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="humidity-min" class="form-label">Độ ẩm không khí tối thiểu (%)</label>
+                                    <input type="number" class="form-control" id="humidity-min" min="0" max="100" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="light-min" class="form-label">Ánh sáng tối thiểu (%)</label>
+                                    <input type="number" class="form-control" id="light-min" min="0" max="100" step="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Lưu Ngưỡng
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Dữ Liệu Lịch Sử</h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn active" data-period="day">Ngày</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn" data-period="week">Tuần</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn" data-period="month">Tháng</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn" data-period="year">Năm</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs mb-3" id="chartTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="temperature-tab" data-bs-toggle="tab" data-bs-target="#temperature-chart-tab" type="button" role="tab">Nhiệt Độ</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="humidity-tab" data-bs-toggle="tab" data-bs-target="#humidity-chart-tab" type="button" role="tab">Độ Ẩm Không Khí</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="soil-tab" data-bs-toggle="tab" data-bs-target="#soil-chart-tab" type="button" role="tab">Độ Ẩm Đất</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="light-tab" data-bs-toggle="tab" data-bs-target="#light-chart-tab" type="button" role="tab">Ánh Sáng</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="chartTabContent">
+                            <div class="tab-pane fade show active" id="temperature-chart-tab" role="tabpanel">
+                                <div class="chart-container" style="position: relative; height:400px;">
+                                    <canvas id="temperature-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="humidity-chart-tab" role="tabpanel">
+                                <div class="chart-container" style="position: relative; height:400px;">
+                                    <canvas id="humidity-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="soil-chart-tab" role="tabpanel">
+                                <div class="chart-container" style="position: relative; height:400px;">
+                                    <canvas id="soil-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="light-chart-tab" role="tabpanel">
+                                <div class="chart-container" style="position: relative; height:400px;">
+                                    <canvas id="light-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Hệ thống giám sát cây trồng &copy; 2025</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

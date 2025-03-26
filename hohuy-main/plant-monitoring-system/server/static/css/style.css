@@ -1,0 +1,190 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sensor-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+}
+
+.sensor-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sensor-card h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+.sensor-card p {
+    margin-bottom: 0;
+}
+
+.circular-progress {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: conic-gradient(#e9ecef 0%, #e9ecef 100%);
+}
+
+#temp-progress {
+    background: conic-gradient(
+        #ff4d6d 0%, 
+        #ff758f 25%, 
+        #ff9e9e 50%, 
+        #ffccd5 75%, 
+        #e9ecef 75%
+    );
+}
+
+#humidity-progress {
+    background: conic-gradient(
+        #0077b6 0%, 
+        #00b4d8 25%, 
+        #90e0ef 50%, 
+        #ade8f4 75%, 
+        #e9ecef 75%
+    );
+}
+
+#soil-progress {
+    background: conic-gradient(
+        #0a9396 0%, 
+        #2a9d8f 25%, 
+        #8ac926 50%, 
+        #e9d8a6 75%, 
+        #e9ecef 75%
+    );
+}
+
+#light-progress {
+    background: conic-gradient(
+        #ffd166 0%, 
+        #ffda6e 25%, 
+        #ffe382 50%, 
+        #ffeeab 75%, 
+        #e9ecef 75%
+    );
+}
+
+.circular-progress .inner {
+    position: absolute;
+    width: 82%;
+    height: 82%;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.8em;
+}
+
+.btn {
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+}
+
+.chart-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tab-pane {
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .sensor-card h3 {
+        font-size: 1.8rem;
+    }
+    
+    .chart-container {
+        height: 300px !important;
+    }
+    
+    .circular-progress {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+.btn-group .btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.value-change {
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.status-on {
+    background-color: #28a745 !important;
+}
+
+.status-off {
+    background-color: #dc3545 !important;
+}
+
+.form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.footer {
+    margin-top: 3rem;
+    border-top: 1px solid #e9ecef;
+}
